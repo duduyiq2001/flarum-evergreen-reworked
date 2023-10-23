@@ -94,7 +94,7 @@ app.initializers.add("kyrne-everygreen", () => {
           stream.update().then(() => {
             stream.goToNumber(post.number());
             console.log("uuuuu");
-            m.redraw();
+            m.redraw().sync();
           });
           // console.log("redrawing 4");
           //m.redraw();
