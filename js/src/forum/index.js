@@ -31,7 +31,7 @@ app.initializers.add("kyrne-everygreen", () => {
   Post.prototype.replyCount = Model.attribute("replyCount");
   //m.redraw.strategy("all");
 
-  DiscussionControls.replyAction = function(goToLast, forceRefresh, replyTo) {
+  DiscussionControls.replyAction = function (goToLast, forceRefresh, replyTo) {
     return new Promise((resolve, reject) => {
       if (app.session.user) {
         if (this.canReply()) {
@@ -64,15 +64,15 @@ app.initializers.add("kyrne-everygreen", () => {
     });
   };
 
-  extend(ReplyComposer.prototype, "oninit", function() {
+  extend(ReplyComposer.prototype, "oninit", function () {
     this.replyTo = this.attrs.replyTo;
   });
 
-  extend(ReplyComposer.prototype, "data", function(data) {
+  extend(ReplyComposer.prototype, "data", function (data) {
     data.replyTo = this.replyTo;
   });
 
-  override(ReplyComposer.prototype, "onsubmit", function() {
+  override(ReplyComposer.prototype, "onsubmit", function () {
     const discussion = this.attrs.discussion;
 
     this.loading = true;
@@ -91,9 +91,13 @@ app.initializers.add("kyrne-everygreen", () => {
         // in, then we can update the post stream and scroll to the post.
         if (app.viewingDiscussion(discussion)) {
           const stream = app.current.get("stream");
-          stream.update().then(() => stream.goToNumber(post.number()));
-          console.log("redrawing 4");
-          m.redraw();
+          stream.update().then(() => {
+            stream.goToNumber(post.number());
+            console.log("uuuuu");
+            m.redraw();
+          });
+          // console.log("redrawing 4");
+          //m.redraw();
         } else {
           // Otherwise, we'll create an alert message to inform the user that
           // their reply has been posted, containing a button which will
@@ -147,7 +151,7 @@ app.initializers.add("kyrne-everygreen", () => {
   app.notificationComponents.userMentioned = UserMentionedNotification;
 
   // Add notification preferences.
-  extend(NotificationGrid.prototype, "notificationTypes", function(items) {
+  extend(NotificationGrid.prototype, "notificationTypes", function (items) {
     items.add("postMentioned", {
       name: "postMentioned",
       icon: "fas fa-reply",
@@ -170,7 +174,7 @@ app.initializers.add("kyrne-everygreen", () => {
     path: "/u/:username/mentions",
     component: MentionsUserPage,
   };
-  extend(UserPage.prototype, "navItems", function(items) {
+  extend(UserPage.prototype, "navItems", function (items) {
     const user = this.user;
     items.add(
       "mentions",
@@ -189,14 +193,14 @@ app.initializers.add("kyrne-everygreen", () => {
   // Remove post mentions when rendering post previews.
   getPlainContent.removeSelectors.push("a.PostMention");
 });
-extend(Post.prototype, "oninit", function() {
+extend(Post.prototype, "oninit", function () {
   this.uniqueKey = Date.now();
 });
-extend(Post.prototype, "forceRerender", function() {
+extend(Post.prototype, "forceRerender", function () {
   this.uniqueKey = Date.now();
   m.redraw();
 });
-extend(Post.prototype, "onbeforeupdate", function(original, vnode) {
+extend(Post.prototype, "onbeforeupdate", function (original, vnode) {
   return true;
 });
 export * from "./utils/textFormatter";
